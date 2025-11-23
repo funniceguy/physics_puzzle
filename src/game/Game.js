@@ -132,7 +132,8 @@ export class Game {
         let x = clientX - rect.left;
 
         const radius = this.currentCircle.circleRadius;
-        x = Math.max(radius + WALL_THICKNESS / 2, Math.min(x, GAME_WIDTH - radius - WALL_THICKNESS / 2));
+        const containerWidth = container.clientWidth;
+        x = Math.max(radius + WALL_THICKNESS / 2, Math.min(x, containerWidth - radius - WALL_THICKNESS / 2));
 
         Matter.Body.setPosition(this.currentCircle, { x: x, y: 50 });
     }
@@ -141,7 +142,9 @@ export class Game {
         if (this.isGameOver || this.isMissionComplete) return;
 
         const level = this.nextCircleLevel;
-        this.currentCircle = Circle.create(GAME_WIDTH / 2, 50, level);
+        const container = document.getElementById('game-container');
+        const containerWidth = container.clientWidth;
+        this.currentCircle = Circle.create(containerWidth / 2, 50, level);
         this.currentCircle.isSensor = true;
         this.currentCircle.isStatic = true;
 

@@ -13,16 +13,26 @@ export class PhysicsWorld {
         this.world = this.engine.world;
 
         const canvas = document.getElementById(elementId);
+        const container = canvas.parentElement;
+
+        // Get actual container dimensions
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+
         this.render = this.Render.create({
             canvas: canvas,
             engine: this.engine,
             options: {
-                width: GAME_WIDTH,
-                height: GAME_HEIGHT,
+                width: containerWidth,
+                height: containerHeight,
                 wireframes: false,
                 background: '#2a2a2a'
             }
         });
+
+        // Store dimensions for boundary creation
+        this.gameWidth = containerWidth;
+        this.gameHeight = containerHeight;
 
         this.createBoundaries();
         this.Render.run(this.render);
@@ -34,26 +44,26 @@ export class PhysicsWorld {
 
     createBoundaries() {
         const ground = this.Bodies.rectangle(
-            GAME_WIDTH / 2,
-            GAME_HEIGHT + WALL_THICKNESS / 2,
-            GAME_WIDTH,
+            this.gameWidth / 2,
+            this.gameHeight + WALL_THICKNESS / 2,
+            this.gameWidth,
             WALL_THICKNESS,
             { isStatic: true, render: { visible: false } }
         );
 
         const leftWall = this.Bodies.rectangle(
             -WALL_THICKNESS / 2,
-            GAME_HEIGHT / 2,
+            this.gameHeight / 2,
             WALL_THICKNESS,
-            GAME_HEIGHT * 2,
+            this.gameHeight * 2,
             { isStatic: true, render: { visible: false } }
         );
 
         const rightWall = this.Bodies.rectangle(
-            GAME_WIDTH + WALL_THICKNESS / 2,
-            GAME_HEIGHT / 2,
+            this.gameWidth + WALL_THICKNESS / 2,
+            this.gameHeight / 2,
             WALL_THICKNESS,
-            GAME_HEIGHT * 2,
+            this.gameHeight * 2,
             { isStatic: true, render: { visible: false } }
         );
 
