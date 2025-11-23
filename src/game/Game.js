@@ -2,11 +2,13 @@ import { PhysicsWorld } from './PhysicsWorld.js';
 import { Circle } from './Circle.js';
 import { CIRCLES, GAME_WIDTH, GAME_HEIGHT, WALL_THICKNESS, MERGE_EXPLOSION_FORCE, PHYSICS, PHYSICS_SCALE, LEVEL_SCORE_THRESHOLDS, TOP_LINE_Y, DROP_COOLDOWN } from './Constants.js';
 import { UIManager } from '../ui/UIManager.js';
+import { AudioManager } from '../audio/AudioManager.js';
 
 export class Game {
     constructor() {
         this.physics = new PhysicsWorld('world');
         this.ui = new UIManager();
+        this.audio = new AudioManager();
 
         this.score = 0;
         this.level = 1;
@@ -56,6 +58,11 @@ export class Game {
         });
 
         container.addEventListener('click', (e) => {
+            // Initialize audio on first click
+            if (!this.audio.isInitialized) {
+                this.audio.init();
+            }
+
             if (this.isGameOver || this.isMissionComplete) return;
 
             if (this.activeItem) {
@@ -86,6 +93,7 @@ export class Game {
             this.itemInventory[this.activeItem]--;
             this.ui.updateItemCount(this.activeItem, this.itemInventory[this.activeItem]);
             this.ui.toggleItemActive(this.activeItem, false);
+            this.audio.play('itemUse');
             this.activeItem = null;
         }
     }
@@ -94,7 +102,7 @@ export class Game {
         switch (this.activeItem) {
             case 'remove':
                 this.physics.removeBody(body);
-                this.createParticles(body.position.x, body.position.y, '💨');
+                this.ui.spawnItemEffect(body.position.x, body.position.y, 'remove');
                 break;
             case 'upgrade':
                 if (body.gameData.level < CIRCLES.length - 1) {
@@ -104,12 +112,12 @@ export class Game {
                     const newCircle = Circle.create(x, y, newLevel);
                     this.applyLevelPhysics(newCircle);
                     this.physics.addBody(newCircle);
-                    this.createParticles(x, y, '✨');
+                    this.ui.spawnItemEffect(x, y, 'upgrade');
                 }
                 break;
             case 'vibration':
                 this.applyVibration(body);
-                this.createParticles(body.position.x, body.position.y, '📳');
+                this.ui.spawnItemEffect(body.position.x, body.position.y, 'vibration');
                 break;
         }
     }
@@ -165,6 +173,8 @@ export class Game {
         Matter.Body.setVelocity(this.currentCircle, { x: 0, y: 5 });
         this.currentCircle = null;
 
+        this.audio.play('drop');
+
         setTimeout(() => {
             this.spawnNextCircle();
         }, DROP_COOLDOWN);
@@ -209,6 +219,7 @@ export class Game {
             this.addScore(CIRCLES[bodyA.gameData.level].score * 2);
 
             this.ui.spawnMergeEffect(midX, midY, CIRCLES[bodyA.gameData.level].score * 2);
+            this.audio.play('merge');
 
             this.applyExplosion(midX, midY, CIRCLES[bodyA.gameData.level].radius, false);
 
@@ -255,6 +266,7 @@ export class Game {
     addScore(points) {
         this.score += points;
         this.ui.updateScore(this.score, this.level);
+        this.audio.play('score');
 
         const nextLevelThreshold = LEVEL_SCORE_THRESHOLDS[this.level];
         if (this.score >= nextLevelThreshold && !this.isMissionComplete) {
@@ -267,6 +279,9 @@ export class Game {
 
         // Reward a random item and get which one
         const acquiredItem = this.rewardRandomItem();
+
+        this.ui.spawnLevelCompleteEffect();
+        this.audio.play('levelComplete');
 
         this.ui.showMissionComplete(this.level, this.score, acquiredItem, () => {
             this.nextLevel();
@@ -359,6 +374,7 @@ export class Game {
     gameOver() {
         this.isGameOver = true;
         this.isMissionComplete = false;
+        this.audio.play('gameOver');
         this.ui.showResult(this.score, false);
     }
 }

@@ -450,4 +450,75 @@ button#result-button:hover {
         height: 45px;
         font-size: 22px;
     }
+}/* Audio Controls */
+#audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 15px;
+    flex-shrink: 0;
+}
+
+#mute-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 0;
+}
+
+#mute-btn:hover { transform: scale(1.1); }
+#mute-btn:active { transform: scale(0.95); }
+
+#volume-slider {
+    width: 80px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    outline: none;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #4cc9f0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #4cc9f0;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Particle Effects */
+.particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+    font-size: 20px;
+    user-select: none;
+}
+
+.particle.explosion { font-size: 16px; }
+.particle.puff { font-size: 18px; opacity: 0.7; }
+.particle.sparkle { font-size: 14px; }
+.particle.item-icon { font-size: 32px; }
+.particle.confetti { position: fixed; font-size: 24px; z-index: 1000; }
+
+@media (max-width: 480px) {
+    #audio-controls { padding: 6px 12px; gap: 8px; }
+    #mute-btn { font-size: 20px; }
+    #volume-slider { width: 60px; }
 }
