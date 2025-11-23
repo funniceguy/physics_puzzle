@@ -522,3 +522,233 @@ button#result-button:hover {
     #mute-btn { font-size: 20px; }
     #volume-slider { width: 60px; }
 }
+/* Hide audio controls on mobile */
+@media (max-width: 768px) {
+    #audio-controls {
+        display: none !important;
+    }
+}
+
+/* Leaderboard Button */
+#leaderboard-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+    background: rgba(255, 215, 0, 0.2);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+#leaderboard-btn:hover {
+    background: rgba(255, 215, 0, 0.3);
+    transform: scale(1.1);
+}
+
+/* Leaderboard Screen */
+#leaderboard-screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+
+#leaderboard-screen h2 {
+    text-align: center;
+    color: #FFD700;
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#leaderboard-list {
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+.leaderboard-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.leaderboard-entry:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.leaderboard-entry.rank-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+    border-color: #FFD700;
+}
+
+.leaderboard-entry.rank-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1));
+    border-color: #C0C0C0;
+}
+
+.leaderboard-entry.rank-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1));
+    border-color: #CD7F32;
+}
+
+.entry-rank {
+    font-size: 24px;
+    font-weight: bold;
+    min-width: 40px;
+}
+
+.entry-name {
+    flex: 1;
+    font-size: 18px;
+    margin: 0 15px;
+}
+
+.entry-score {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4cc9f0;
+}
+
+.entry-level {
+    font-size: 14px;
+    color: #888;
+    margin-left: 10px;
+}
+
+#close-leaderboard {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 40px;
+    font-size: 18px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#close-leaderboard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Name Input Modal */
+#name-input-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    z-index: 1001;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+#name-input-modal h3 {
+    color: #FFD700;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#player-name {
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid rgba(76, 201, 240, 0.5);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Outfit', sans-serif;
+}
+
+#player-name::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#player-name:focus {
+    outline: none;
+    border-color: #4cc9f0;
+    box-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+}
+
+#submit-score {
+    padding: 12px 40px;
+    font-size: 18px;
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+#submit-score:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+@media (max-width: 480px) {
+    #leaderboard-btn {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+
+    #leaderboard-screen h2 {
+        font-size: 28px;
+    }
+
+    .leaderboard-entry {
+        padding: 12px 15px;
+    }
+
+    .entry-rank {
+        font-size: 20px;
+        min-width: 30px;
+    }
+
+    .entry-name {
+        font-size: 16px;
+    }
+
+    .entry-score {
+        font-size: 18px;
+    }
+
+    #name-input-modal {
+        padding: 30px 20px;
+        width: 90%;
+        max-width: 350px;
+    }
+}

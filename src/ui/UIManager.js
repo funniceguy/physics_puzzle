@@ -309,3 +309,76 @@ export class UIManager {
         this.scoreIcon.classList.add('flash');
     }
 }
+
+    showLeaderboard(scores) {
+        const leaderboardScreen = document.getElementById('leaderboard-screen');
+        const leaderboardList = document.getElementById('leaderboard-list');
+        
+        leaderboardList.innerHTML = '';
+        
+        if (scores.length === 0) {
+            leaderboardList.innerHTML = '<p style="text-align: center; color: #888;">No scores yet. Be the first!</p>';
+        } else {
+            scores.forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.className = `leaderboard-entry rank-${index + 1}`;
+                
+                const rank = document.createElement('div');
+                rank.className = 'entry-rank';
+                rank.textContent = `#${index + 1}`;
+                
+                const name = document.createElement('div');
+                name.className = 'entry-name';
+                name.textContent = entry.name;
+                
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'entry-score';
+                scoreDiv.innerHTML = `${entry.score} <span class="entry-level">Lv.${entry.level}</span>`;
+                
+                div.appendChild(rank);
+                div.appendChild(name);
+                div.appendChild(scoreDiv);
+                leaderboardList.appendChild(div);
+            });
+        }
+        
+        leaderboardScreen.style.display = 'block';
+    }
+
+    showNameInput(callback) {
+        const modal = document.getElementById('name-input-modal');
+        const nameInput = document.getElementById('player-name');
+        const submitBtn = document.getElementById('submit-score');
+        
+        modal.style.display = 'block';
+        nameInput.value = '';
+        nameInput.focus();
+        
+        const handleSubmit = () => {
+            const name = nameInput.value.trim() || 'Anonymous';
+            modal.style.display = 'none';
+            callback(name);
+            submitBtn.removeEventListener('click', handleSubmit);
+            nameInput.removeEventListener('keypress', handleKeyPress);
+        };
+        
+        const handleKeyPress = (e) => {
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
+        };
+        
+        submitBtn.addEventListener('click', handleSubmit);
+        nameInput.addEventListener('keypress', handleKeyPress);
+    }
+
+    setupLeaderboardButton(callback) {
+        const btn = document.getElementById('leaderboard-btn');
+        const closeBtn = document.getElementById('close-leaderboard');
+        const screen = document.getElementById('leaderboard-screen');
+        
+        btn.addEventListener('click', callback);
+        closeBtn.addEventListener('click', () => {
+            screen.style.display = 'none';
+        });
+    }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,7 +19,7 @@
                 <div id="top-bar">
                     <div id="level-info">Level <span id="level">1</span></div>
                     <div id="score-info">
-                        <span id="score-icon">✨</span> Score: <span id="score">0</span> / <span
+                        <span id="score-icon">??/span> Score: <span id="score">0</span> / <span
                             id="target-score">3000</span>
                     </div>
                     <div id="next-circle-container">
@@ -40,16 +40,36 @@
         </div>
 
         <div id="item-bar">
-            <button class="item-btn" id="btn-remove" title="Remove Fruit">🗑️</button>
-            <button class="item-btn" id="btn-upgrade" title="Upgrade Fruit">⬆️</button>
-            <button class="item-btn" id="btn-vibration" title="Vibration">📳</button>
+            <button class="item-btn" id="btn-remove" title="Remove Fruit">?뿊截?/button>
+            <button class="item-btn" id="btn-upgrade" title="Upgrade Fruit">燧놅툘</button>
+            <button class="item-btn" id="btn-vibration" title="Vibration">?벓</button>
         </div>
 
         <div id="audio-controls">
-            <button id="mute-btn" title="Toggle Sound">🔊</button>
+            <button id="mute-btn" title="Toggle Sound">?뵄</button>
             <input type="range" id="volume-slider" min="0" max="100" value="70" title="Volume">
         </div>
     </div>
+
+
+    <!-- Leaderboard Button -->
+    <button id="leaderboard-btn">🏆</button>
+
+    <!-- Leaderboard Screen -->
+    <div id="leaderboard-screen">
+        <h2>🏆 Leaderboard</h2>
+        <div id="leaderboard-list"></div>
+        <button id="close-leaderboard">Close</button>
+    </div>
+
+    <!-- Name Input Modal -->
+    <div id="name-input-modal">
+        <h3>🎉 New High Score!</h3>
+        <input type="text" id="player-name" placeholder="Enter your name" maxlength="15">
+        <button id="submit-score">Submit</button>
+    </div>
+
+
     <script type="module" src="src/main.js"></script>
 </body>
 
