@@ -1,0 +1,13 @@
+{
+  "name": "physics-puzzle",
+  "version": "1.0.0",
+  "description": "A physics-based puzzle game",
+  "scripts": {
+    "dev": "vite --port 8080",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

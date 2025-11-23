@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Puzzle Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+
+<body>
+    <div id="main-wrapper">
+        <div id="game-container">
+            <div id="ui-layer">
+                <div id="top-bar">
+                    <div id="level-info">Level <span id="level">1</span></div>
+                    <div id="score-info">
+                        <span id="score-icon">✨</span> Score: <span id="score">0</span> / <span
+                            id="target-score">3000</span>
+                    </div>
+                    <div id="next-circle-container">
+                        Next: <div id="next-circle"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="effects-container"></div>
+
+            <div id="result-screen" style="display: none;">
+                <h1 id="result-title">GAME OVER</h1>
+                <div id="result-score">Final Score: 0</div>
+                <button id="result-button" onclick="location.reload()">Play Again</button>
+            </div>
+            <div id="top-line"></div>
+            <canvas id="world"></canvas>
+        </div>
+
+        <div id="item-bar">
+            <button class="item-btn" id="btn-remove" title="Remove Fruit">🗑️</button>
+            <button class="item-btn" id="btn-upgrade" title="Upgrade Fruit">⬆️</button>
+            <button class="item-btn" id="btn-vibration" title="Vibration">📳</button>
+        </div>
+    </div>
+    <script type="module" src="src/main.js"></script>
+</body>
+
+</html>
