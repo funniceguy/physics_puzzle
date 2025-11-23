@@ -37,11 +37,8 @@ export class PhysicsWorld {
         this.createBoundaries();
         this.Render.run(this.render);
 
-        // Create runner with fixed timestep for consistent performance
-        this.runner = this.Runner.create({
-            delta: 1000 / 60,  // Fixed 60 FPS
-            isFixed: true
-        });
+        // Use default runner for proper physics (fixed timestep was causing issues)
+        this.runner = this.Runner.create();
         this.Runner.run(this.runner, this.engine);
     }
 
