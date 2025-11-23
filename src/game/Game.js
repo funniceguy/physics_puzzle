@@ -1,18 +1,15 @@
-﻿import { PhysicsWorld } from './PhysicsWorld.js';
+import { PhysicsWorld } from './PhysicsWorld.js';
 import { Circle } from './Circle.js';
 import { CIRCLES, GAME_WIDTH, GAME_HEIGHT, WALL_THICKNESS, MERGE_EXPLOSION_FORCE, PHYSICS, PHYSICS_SCALE, LEVEL_SCORE_THRESHOLDS, TOP_LINE_Y, DROP_COOLDOWN } from './Constants.js';
 import { UIManager } from '../ui/UIManager.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { isMobile } from '../utils/deviceDetection.js';
-import { LeaderboardManager } from '../leaderboard/LeaderboardManager.js';
-
 
 export class Game {
     constructor() {
         this.physics = new PhysicsWorld('world');
         this.ui = new UIManager();
         this.audio = new AudioManager();
-        this.leaderboard = new LeaderboardManager();
         this.isMobileDevice = isMobile();
 
         // Disable effects on mobile for performance
@@ -41,12 +38,6 @@ export class Game {
         this.setupCollision();
         this.setupGameLoop();
         this.spawnNextCircle();
-
-        // Setup leaderboard button
-        this.ui.setupLeaderboardButton(() => {
-            const scores = this.leaderboard.getTopScores();
-            this.ui.showLeaderboard(scores);
-        });
 
         this.ui.updateScore(this.score, this.level);
         this.ui.updateAllItemCounts(this.itemInventory);
@@ -471,14 +462,6 @@ export class Game {
             this.audio.play('gameOver');
         }
 
-        // Check if it's a high score
-        if (this.leaderboard.isHighScore(this.score)) {
-            this.ui.showNameInput((name) => {
-                this.leaderboard.saveScore(name, this.score, this.level);
-                this.ui.showResult(this.score, false);
-            });
-        } else {
-            this.ui.showResult(this.score, false);
-        }
+        this.ui.showResult(this.score, false);
     }
 }
