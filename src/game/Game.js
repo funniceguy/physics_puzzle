@@ -377,8 +377,8 @@ export class Game {
                     if (!body.gameData.deadlineWarningTime) {
                         body.gameData.deadlineWarningTime = Date.now();
                     } else if (Date.now() - body.gameData.deadlineWarningTime > 500) {
-                        // If fruit stays above line for 500ms, game over
-                        this.gameOver();
+                        // If fruit stays above line for 500ms, trigger slow motion game over
+                        this.triggerSlowMotionGameOver();
                         break;
                     }
                 } else {
@@ -389,8 +389,52 @@ export class Game {
         });
     }
 
-    gameOver() {
+    triggerSlowMotionGameOver() {
+        if (this.isGameOver) return;
         this.isGameOver = true;
+
+        // Slow down physics engine
+        const originalTimeScale = this.physics.engine.timing.timeScale;
+        let currentTimeScale = originalTimeScale;
+        const slowDownDuration = 800; // 0.8 seconds to slow down
+        const slowMotionDuration = 600; // 0.6 seconds at slow speed
+        const speedUpDuration = 400; // 0.4 seconds to speed back up
+        const minTimeScale = 0.2; // Slow to 20% speed
+
+        const startTime = Date.now();
+
+        const slowMotionEffect = () => {
+            const elapsed = Date.now() - startTime;
+
+            if (elapsed < slowDownDuration) {
+                // Slow down phase
+                const progress = elapsed / slowDownDuration;
+                currentTimeScale = originalTimeScale - (originalTimeScale - minTimeScale) * progress;
+                this.physics.engine.timing.timeScale = currentTimeScale;
+                requestAnimationFrame(slowMotionEffect);
+            } else if (elapsed < slowDownDuration + slowMotionDuration) {
+                // Stay at slow motion
+                this.physics.engine.timing.timeScale = minTimeScale;
+                requestAnimationFrame(slowMotionEffect);
+            } else if (elapsed < slowDownDuration + slowMotionDuration + speedUpDuration) {
+                // Speed back up phase
+                const speedUpElapsed = elapsed - (slowDownDuration + slowMotionDuration);
+                const progress = speedUpElapsed / speedUpDuration;
+                currentTimeScale = minTimeScale + (originalTimeScale - minTimeScale) * progress;
+                this.physics.engine.timing.timeScale = currentTimeScale;
+                requestAnimationFrame(slowMotionEffect);
+            } else {
+                // Reset to normal speed and show game over
+                this.physics.engine.timing.timeScale = originalTimeScale;
+                this.gameOver();
+            }
+        };
+
+        slowMotionEffect();
+    }
+
+    gameOver() {
+        if (this.isGameOver) return; // Prevent double trigger
         this.isMissionComplete = false;
         this.audio.play('gameOver');
         this.ui.showResult(this.score, false);
