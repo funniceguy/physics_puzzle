@@ -152,6 +152,7 @@ export class UIManager {
     }
 
     spawnMergeEffect(x, y, score) {
+        console.log('spawnMergeEffect called at:', x, y);
         // Get target position (score icon)
         const iconRect = this.scoreIcon.getBoundingClientRect();
         const gameRect = document.getElementById('game-container').getBoundingClientRect();
@@ -159,6 +160,8 @@ export class UIManager {
         // Calculate target relative to game container
         const targetX = iconRect.left - gameRect.left + iconRect.width / 2;
         const targetY = iconRect.top - gameRect.top + iconRect.height / 2;
+
+        console.log('Target position:', targetX, targetY);
 
         // Flying stars to score
         for (let i = 0; i < 8; i++) {
@@ -190,6 +193,7 @@ export class UIManager {
     }
 
     spawnExplosionParticles(x, y) {
+        console.log('spawnExplosionParticles at:', x, y);
         const particles = ['💥', '✨', '💫', '⭐'];
         for (let i = 0; i < 12; i++) {
             const particle = document.createElement('div');
@@ -238,6 +242,7 @@ export class UIManager {
     }
 
     spawnItemEffect(x, y, itemType) {
+        console.log('spawnItemEffect at:', x, y, 'type:', itemType);
         const effects = {
             remove: '🗑️',
             upgrade: '⬆️',
