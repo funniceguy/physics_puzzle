@@ -1,15 +1,28 @@
+:root {
+    --app-height: 100vh;
+}
+
+html {
+    height: -webkit-fill-available;
+}
+
 body {
     margin: 0;
     padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: var(--app-height);
+    min-height: -webkit-fill-available;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
     box-sizing: border-box;
     color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
 
 #main-wrapper {
@@ -29,7 +42,7 @@ body {
     max-width: 400px;
     height: auto;
     aspect-ratio: 2 / 3;
-    max-height: calc(100vh - 150px);
+    max-height: calc(var(--app-height) - 150px);
     background-color: rgba(30, 30, 40, 0.6);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -352,11 +365,11 @@ button#result-button:hover {
     }
 
     #main-wrapper {
-        gap: 10px;
+        gap: 8px;
     }
 
     #game-container {
-        max-height: calc(100vh - 120px);
+        max-height: calc(var(--app-height) - 100px);
     }
 
     #top-bar {
