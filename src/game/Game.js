@@ -286,21 +286,25 @@ export class Game {
         this.ui.updateLevel(this.level);
         this.ui.updateScore(this.score, this.level);
         this.isMissionComplete = false;
+        this.isGameOver = false;
 
         if (this.currentCircle) {
             this.physics.removeBody(this.currentCircle);
+            this.currentCircle = null;
         }
 
         // Add 1-second delay before allowing fruit drops
         this.canDrop = false;
         setTimeout(() => {
-            this.spawnNextCircle();
+            if (!this.isGameOver) {
+                this.spawnNextCircle();
+            }
         }, 1000);
     }
 
     setupGameLoop() {
         Matter.Events.on(this.physics.engine, 'afterUpdate', () => {
-            if (this.isGameOver || this.isMissionComplete) return;
+            if (this.isGameOver) return;
 
             const bodies = Matter.Composite.allBodies(this.physics.world);
 
@@ -354,6 +358,7 @@ export class Game {
 
     gameOver() {
         this.isGameOver = true;
+        this.isMissionComplete = false;
         this.ui.showResult(this.score, false);
     }
 }
