@@ -77,8 +77,6 @@ export class Game {
         container.addEventListener('touchstart', async () => {
             if (!this.audio.isInitialized) {
                 await this.audio.init();
-                // iOS requires a sound to be played on user gesture
-                await this.audio.unlockAudio();
             }
         }, { once: true });
     }

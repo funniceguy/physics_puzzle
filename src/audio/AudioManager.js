@@ -21,128 +21,70 @@ export class AudioManager {
 
             // Create gain nodes
             this.masterGain = this.audioContext.createGain();
-            this.bgmGain = this.audioContext.createGain();
             this.sfxGain = this.audioContext.createGain();
 
-            // Connect gain nodes
-            this.bgmGain.connect(this.masterGain);
+            // Connect gain nodes (removed BGM)
             this.sfxGain.connect(this.masterGain);
             this.masterGain.connect(this.audioContext.destination);
 
             // Set initial volumes
             this.masterGain.gain.value = this.isMuted ? 0 : this.volume;
-            this.bgmGain.gain.value = 0.3;
-            this.sfxGain.gain.value = 0.5;
+            this.sfxGain.gain.value = 0.6;
 
             this.isInitialized = true;
 
-            // Resume AudioContext for mobile (iOS requirement)
+            // Resume AudioContext for mobile
             if (this.audioContext.state === 'suspended') {
                 await this.audioContext.resume();
             }
-
-            // Start BGM
-            this.playBGM();
         } catch (error) {
             console.error('Audio initialization failed:', error);
         }
     }
 
-    // iOS requires a sound to be played on user gesture
-    async unlockAudio() {
-        if (!this.audioContext) return;
-
-        try {
-            // Resume if suspended
-            if (this.audioContext.state === 'suspended') {
-                await this.audioContext.resume();
-            }
-
-            // Play a silent sound to unlock
-            const buffer = this.audioContext.createBuffer(1, 1, 22050);
-            const source = this.audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(this.audioContext.destination);
-            source.start(0);
-        } catch (error) {
-            console.error('Audio unlock failed:', error);
-        }
-    }
-
-    playBGM() {
-        if (!this.isInitialized || this.bgmSource) return;
-
-        const playLoop = () => {
-            if (!this.isInitialized) return;
-
-            const oscillator = this.audioContext.createOscillator();
-            const gainNode = this.audioContext.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(this.bgmGain);
-
-            // Ambient background music (soft, calming)
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(330, this.audioContext.currentTime + 4);
-            oscillator.frequency.exponentialRampToValueAtTime(220, this.audioContext.currentTime + 8);
-
-            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.5);
-            gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime + 7.5);
-            gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 8);
-
-            oscillator.start(this.audioContext.currentTime);
-            oscillator.stop(this.audioContext.currentTime + 8);
-
-            oscillator.onended = () => {
-                setTimeout(playLoop, 100);
-            };
-
-            this.bgmSource = oscillator;
-        };
-
-        playLoop();
-    }
-
     async play(soundType) {
+        // Auto-initialize if needed
         if (!this.isInitialized) {
             await this.init();
         }
 
-        if (!this.audioContext) {
-            return;
-        }
+        if (!this.audioContext) return;
 
-        // Resume context if suspended (mobile requirement)
+        // Always try to resume on mobile
         if (this.audioContext.state === 'suspended') {
-            await this.audioContext.resume();
+            try {
+                await this.audioContext.resume();
+            } catch (e) {
+                console.warn('Could not resume audio:', e);
+                return;
+            }
         }
 
         const now = this.audioContext.currentTime;
 
-        switch (soundType) {
-            case 'drop':
-                this.playDrop(now);
-                break;
-            case 'bounce':
-                this.playBounce(now);
-                break;
-            case 'merge':
-                this.playMerge(now);
-                break;
-            case 'score':
-                this.playScore(now);
-                break;
-            case 'itemUse':
-                this.playItemUse(now);
-                break;
-            case 'levelComplete':
-                this.playLevelComplete(now);
-                break;
-            case 'gameOver':
-                this.playGameOver(now);
-                break;
+        try {
+            switch (soundType) {
+                case 'drop':
+                    this.playDrop(now);
+                    break;
+                case 'merge':
+                    this.playMerge(now);
+                    break;
+                case 'score':
+                    this.playScore(now);
+                    break;
+                case 'itemUse':
+                    this.playItemUse(now);
+                    break;
+                case 'levelComplete':
+                    this.playLevelComplete(now);
+                    break;
+                case 'gameOver':
+                    this.playGameOver(now);
+                    break;
+            }
+        } catch (error) {
+            console.warn('Sound play failed:', error);
         }
     }
 

@@ -37,8 +37,11 @@ export class PhysicsWorld {
         this.createBoundaries();
         this.Render.run(this.render);
 
-        // Create runner
-        this.runner = this.Runner.create();
+        // Create runner with fixed timestep for consistent performance
+        this.runner = this.Runner.create({
+            delta: 1000 / 60,  // Fixed 60 FPS
+            isFixed: true
+        });
         this.Runner.run(this.runner, this.engine);
     }
 
