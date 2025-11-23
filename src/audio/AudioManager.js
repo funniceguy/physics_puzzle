@@ -17,7 +17,6 @@ export class AudioManager {
         if (this.isInitialized) return;
 
         try {
-            console.log('Initializing audio...');
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
             // Create gain nodes
@@ -36,7 +35,11 @@ export class AudioManager {
             this.sfxGain.gain.value = 0.5;
 
             this.isInitialized = true;
-            console.log('Audio initialized successfully!');
+
+            // Resume AudioContext for mobile (iOS requirement)
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
 
             // Start BGM
             this.playBGM();
@@ -83,13 +86,16 @@ export class AudioManager {
 
     async play(soundType) {
         if (!this.isInitialized) {
-            console.log('Audio not initialized, initializing now...');
             await this.init();
         }
 
         if (!this.audioContext) {
-            console.warn('AudioContext not available');
             return;
+        }
+
+        // Resume context if suspended (mobile requirement)
+        if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
         }
 
         const now = this.audioContext.currentTime;

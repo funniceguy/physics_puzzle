@@ -72,6 +72,13 @@ export class Game {
                 this.dropCircle();
             }
         });
+
+        // Mobile touch support for audio
+        container.addEventListener('touchstart', () => {
+            if (!this.audio.isInitialized) {
+                this.audio.init();
+            }
+        }, { once: true });
     }
 
     handleItemClick(e) {
