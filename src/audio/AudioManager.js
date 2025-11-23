@@ -48,6 +48,27 @@ export class AudioManager {
         }
     }
 
+    // iOS requires a sound to be played on user gesture
+    async unlockAudio() {
+        if (!this.audioContext) return;
+
+        try {
+            // Resume if suspended
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+
+            // Play a silent sound to unlock
+            const buffer = this.audioContext.createBuffer(1, 1, 22050);
+            const source = this.audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(this.audioContext.destination);
+            source.start(0);
+        } catch (error) {
+            console.error('Audio unlock failed:', error);
+        }
+    }
+
     playBGM() {
         if (!this.isInitialized || this.bgmSource) return;
 

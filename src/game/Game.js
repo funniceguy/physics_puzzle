@@ -74,9 +74,11 @@ export class Game {
         });
 
         // Mobile touch support for audio
-        container.addEventListener('touchstart', () => {
+        container.addEventListener('touchstart', async () => {
             if (!this.audio.isInitialized) {
-                this.audio.init();
+                await this.audio.init();
+                // iOS requires a sound to be played on user gesture
+                await this.audio.unlockAudio();
             }
         }, { once: true });
     }
@@ -367,12 +369,23 @@ export class Game {
                 return true;
             });
 
+            // Check game over condition - fruits above deadline
             for (const body of bodies) {
                 if (body.isStatic || body.isSensor) continue;
 
-                if (body.position.y < TOP_LINE_Y && body.speed < 0.5) {
-                    this.gameOver();
-                    break;
+                // Game over if fruit is above the line
+                if (body.position.y < TOP_LINE_Y) {
+                    // Give a small grace period for bouncing (500ms)
+                    if (!body.gameData.deadlineWarningTime) {
+                        body.gameData.deadlineWarningTime = Date.now();
+                    } else if (Date.now() - body.gameData.deadlineWarningTime > 500) {
+                        // If fruit stays above line for 500ms, game over
+                        this.gameOver();
+                        break;
+                    }
+                } else {
+                    // Reset warning if fruit goes back below line
+                    body.gameData.deadlineWarningTime = null;
                 }
             }
         });
