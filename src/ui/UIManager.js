@@ -81,7 +81,10 @@ export class UIManager {
         this.resultTitle.style.color = isWin ? '#00FF00' : '#FF0000';
 
         this.resultButton.textContent = 'Play Again';
-        this.resultButton.onclick = () => location.reload();
+        this.resultButton.onclick = (event) => {
+            event.stopPropagation(); // Prevent click from bubbling to game container
+            location.reload();
+        };
     }
 
     showMissionComplete(level, score, acquiredItem, onNextLevel) {
@@ -103,7 +106,8 @@ export class UIManager {
         this.resultScore.innerHTML = `Current Score: ${score}<br><br>🎁 Acquired: ${itemIcons[acquiredItem]} ${itemNames[acquiredItem]}`;
 
         this.resultButton.textContent = 'Next Level';
-        this.resultButton.onclick = () => {
+        this.resultButton.onclick = (event) => {
+            event.stopPropagation(); // Prevent click from bubbling to game container
             this.resultScreen.style.display = 'none';
             onNextLevel();
         };

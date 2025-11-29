@@ -327,19 +327,26 @@ export class Game {
         this.level++;
         this.ui.updateLevel(this.level);
         this.ui.updateScore(this.score, this.level);
+
+        // Reset game state flags BEFORE removing current circle
         this.isMissionComplete = false;
         this.isGameOver = false;
 
+        // Remove current circle if exists
         if (this.currentCircle) {
             this.physics.removeBody(this.currentCircle);
             this.currentCircle = null;
         }
 
-        // Add 1-second delay before allowing fruit drops
+        // Immediately spawn next circle to prevent game from getting stuck
+        // The canDrop flag will control when user can actually drop
         this.canDrop = false;
+        this.spawnNextCircle();
+
+        // Re-enable dropping after a short delay
         setTimeout(() => {
-            if (!this.isGameOver) {
-                this.spawnNextCircle();
+            if (!this.isGameOver && !this.isMissionComplete) {
+                this.canDrop = true;
             }
         }, 1000);
     }
