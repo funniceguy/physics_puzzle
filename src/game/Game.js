@@ -163,6 +163,12 @@ export class Game {
     spawnNextCircle() {
         if (this.isGameOver || this.isMissionComplete) return;
 
+        // Safety check: don't spawn if there's already a current circle
+        if (this.currentCircle) {
+            console.warn('Attempted to spawn circle while one already exists');
+            return;
+        }
+
         const level = this.nextCircleLevel;
         const container = document.getElementById('game-container');
         const containerWidth = container.clientWidth;
@@ -178,6 +184,8 @@ export class Game {
     }
 
     dropCircle() {
+        if (!this.currentCircle) return; // Safety check
+
         this.canDrop = false;
         this.currentCircle.isSensor = false;
         this.currentCircle.isStatic = false;
@@ -193,7 +201,10 @@ export class Game {
         }
 
         setTimeout(() => {
-            this.spawnNextCircle();
+            // Only spawn if game is still active
+            if (!this.isGameOver && !this.isMissionComplete) {
+                this.spawnNextCircle();
+            }
         }, DROP_COOLDOWN);
     }
 
