@@ -4,9 +4,11 @@ import { CIRCLES, GAME_WIDTH, GAME_HEIGHT, WALL_THICKNESS, MERGE_EXPLOSION_FORCE
 import { UIManager } from '../ui/UIManager.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { isMobile } from '../utils/deviceDetection.js';
+import { ACHIEVEMENTS, checkAchievement, getNewlyCompletedAchievements } from '../data/AchievementData.js';
 
 export class Game {
-    constructor() {
+    constructor(progressManager) {
+        this.progressManager = progressManager;
         this.physics = new PhysicsWorld('world');
         this.ui = new UIManager();
         this.audio = new AudioManager();
@@ -32,6 +34,12 @@ export class Game {
             upgrade: 3,
             vibration: 3
         };
+
+        // Sync inventory from progress manager
+        if (this.progressManager) {
+            const progress = this.progressManager.getProgress();
+            this.itemInventory = { ...progress.inventory };
+        }
 
         this.setupInput();
         this.setupUI();
@@ -65,6 +73,11 @@ export class Game {
         });
 
         container.addEventListener('click', (e) => {
+            // Don't handle clicks on item bar buttons
+            if (e.target.closest('#item-bar')) {
+                return;
+            }
+
             // Initialize audio on first click
             if (!this.audio.isInitialized) {
                 this.audio.init();
@@ -96,8 +109,10 @@ export class Game {
         }
 
         const rect = document.getElementById('game-container').getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const scaleX = GAME_WIDTH / rect.width;
+        const scaleY = GAME_HEIGHT / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
 
         const bodies = Matter.Query.point(Matter.Composite.allBodies(this.physics.world), { x, y });
         const targetBody = bodies.find(b => b.label === 'circle' && !b.isStatic && !b.isSensor);
@@ -151,11 +166,12 @@ export class Game {
     updateCurrentCirclePosition(clientX) {
         const container = document.getElementById('game-container');
         const rect = container.getBoundingClientRect();
-        let x = clientX - rect.left;
+        const scaleX = GAME_WIDTH / rect.width;
+        let x = (clientX - rect.left) * scaleX;
 
         const radius = this.currentCircle.circleRadius;
-        const containerWidth = container.clientWidth;
-        x = Math.max(radius + WALL_THICKNESS / 2, Math.min(x, containerWidth - radius - WALL_THICKNESS / 2));
+        const containerWidth = GAME_WIDTH;
+        x = Math.max(radius, Math.min(x, containerWidth - radius));
 
         Matter.Body.setPosition(this.currentCircle, { x: x, y: 50 });
     }
@@ -171,7 +187,7 @@ export class Game {
 
         const level = this.nextCircleLevel;
         const container = document.getElementById('game-container');
-        const containerWidth = container.clientWidth;
+        const containerWidth = GAME_WIDTH;
         this.currentCircle = Circle.create(containerWidth / 2, 50, level);
         this.currentCircle.isSensor = true;
         this.currentCircle.isStatic = true;
@@ -261,6 +277,12 @@ export class Game {
             } else {
                 this.addScore(CIRCLES[bodyA.gameData.level].score * 4);
             }
+
+            // Record progress
+            if (this.progressManager) {
+                this.progressManager.recordMerge(bodyA.gameData.level);
+                this.checkAchievements();
+            }
         }
     }
 
@@ -297,6 +319,12 @@ export class Game {
     addScore(points) {
         this.score += points;
         this.ui.updateScore(this.score, this.level);
+
+        // Record progress
+        if (this.progressManager) {
+            this.progressManager.addScore(points);
+            this.checkAchievements();
+        }
 
         // Only play sound on desktop
         if (!this.isMobileDevice) {
@@ -335,6 +363,12 @@ export class Game {
     }
 
     nextLevel() {
+        // Record progress
+        if (this.progressManager) {
+            this.progressManager.recordLevelClear(this.level);
+            this.checkAchievements();
+        }
+
         this.level++;
         this.ui.updateLevel(this.level);
         this.ui.updateScore(this.score, this.level);
@@ -480,6 +514,29 @@ export class Game {
             this.audio.play('gameOver');
         }
 
+        // Record progress
+        if (this.progressManager) {
+            this.progressManager.incrementGamesPlayed();
+            this.checkAchievements();
+        }
+
         this.ui.showResult(this.score, false);
+    }
+
+    checkAchievements() {
+        if (!this.progressManager) return;
+
+        const progress = this.progressManager.getProgress();
+        const newAchievements = getNewlyCompletedAchievements(ACHIEVEMENTS, progress);
+
+        newAchievements.forEach(achievement => {
+            if (this.progressManager.completeAchievement(achievement.id)) {
+                this.ui.showAchievementNotification(achievement);
+                // Also play a sound if possible?
+                if (!this.isMobileDevice) {
+                    this.audio.play('levelComplete'); // Reuse level complete sound for now
+                }
+            }
+        });
     }
 }

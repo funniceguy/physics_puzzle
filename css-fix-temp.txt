@@ -1,0 +1,19 @@
+/* REMOVED DUPLICATE DEFINITIONS - These were overriding the proper centering at lines 9 and 28 */
+/* The duplicate body max-width: 1080px was causing left alignment */
+/* The duplicate main-wrapper position: relative was removing flex centering */
+
+/* Original duplicates removed:
+body {
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+#main-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 1080px;
+    max-height: 1920px;
+    margin: 0 auto;
+}
+*/

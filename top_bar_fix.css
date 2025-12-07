@@ -1,0 +1,7 @@
+/* Add to style.css */
+.top-left-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+}

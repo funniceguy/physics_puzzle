@@ -1,0 +1,26 @@
+/* Add to style.css */
+#btn-lobby {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    margin-right: 10px;
+    transition: transform 0.2s;
+    pointer-events: auto;
+    /* Ensure it's clickable */
+}
+
+#btn-lobby:hover {
+    transform: scale(1.1);
+}
+
+#top-bar {
+    pointer-events: none;
+    /* Keep container non-blocking */
+}
+
+#top-bar>* {
+    pointer-events: auto;
+    /* Enable pointer events for children */
+}

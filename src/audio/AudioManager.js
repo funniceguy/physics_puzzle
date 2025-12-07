@@ -5,7 +5,7 @@ export class AudioManager {
         this.bgmGain = null;
         this.sfxGain = null;
         this.isMuted = false;
-        this.volume = 0.7;
+        this.volume = 0.5;
         this.bgmSource = null;
         this.isInitialized = false;
 
@@ -250,7 +250,7 @@ export class AudioManager {
         try {
             const settings = JSON.parse(localStorage.getItem('gameAudioSettings'));
             if (settings) {
-                this.volume = settings.volume ?? 0.7;
+                this.volume = settings.volume ?? 0.5;
                 this.isMuted = settings.isMuted ?? false;
             }
         } catch (e) {

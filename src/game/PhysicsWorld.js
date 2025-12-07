@@ -13,31 +13,26 @@ export class PhysicsWorld {
         this.world = this.engine.world;
 
         const canvas = document.getElementById(elementId);
-        const container = canvas.parentElement;
 
-        // Get actual container dimensions
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
+        // Use fixed game dimensions
+        this.gameWidth = GAME_WIDTH;
+        this.gameHeight = GAME_HEIGHT;
 
         this.render = this.Render.create({
             canvas: canvas,
             engine: this.engine,
             options: {
-                width: containerWidth,
-                height: containerHeight,
+                width: this.gameWidth,
+                height: this.gameHeight,
                 wireframes: false,
                 background: '#2a2a2a'
             }
         });
 
-        // Store dimensions for boundary creation
-        this.gameWidth = containerWidth;
-        this.gameHeight = containerHeight;
-
         this.createBoundaries();
         this.Render.run(this.render);
 
-        // Use default runner for proper physics (fixed timestep was causing issues)
+        // Use default runner for proper physics
         this.runner = this.Runner.create();
         this.Runner.run(this.runner, this.engine);
     }

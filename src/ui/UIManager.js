@@ -312,4 +312,28 @@ export class UIManager {
         void this.scoreIcon.offsetWidth;
         this.scoreIcon.classList.add('flash');
     }
+
+    showAchievementNotification(achievement) {
+        const notification = document.createElement('div');
+        notification.className = 'achievement-notification show';
+        notification.innerHTML = `
+            <div class="notif-icon">${achievement.icon}</div>
+            <div class="notif-content">
+                <div class="notif-title">업적 달성!</div>
+                <div class="notif-desc">${achievement.name}</div>
+            </div>
+        `;
+
+        // Ensure it's on top of everything
+        notification.style.zIndex = '2000';
+        document.body.appendChild(notification);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                notification.remove();
+            }, 500); // Wait for transition
+        }, 3000);
+    }
 }

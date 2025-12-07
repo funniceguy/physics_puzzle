@@ -1,4 +1,10 @@
-import { Game } from './game/Game.js';
+import { ScreenManager } from './ui/ScreenManager.js';
+import { ProgressManager } from './managers/ProgressManager.js';
+
+import { LobbyScreen } from './ui/LobbyScreen.js';
+import { StoryScreen } from './ui/StoryScreen.js';
+import { AchievementScreen } from './ui/AchievementScreen.js';
+import { GameScreen } from './ui/GameScreen.js';
 
 // Set CSS variable for mobile viewport height
 function setAppHeight() {
@@ -6,28 +12,35 @@ function setAppHeight() {
     doc.style.setProperty('--app-height', `${window.innerHeight}px`);
 }
 
-window.addEventListener('resize', setAppHeight);
-window.addEventListener('orientationchange', setAppHeight);
+window.addEventListener('resize', () => {
+    setAppHeight();
+});
+window.addEventListener('orientationchange', () => {
+    setAppHeight();
+});
 setAppHeight();
 
 window.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
+    const screenManager = new ScreenManager();
+    const progressManager = new ProgressManager();
 
-    // Audio controls
-    const muteBtn = document.getElementById('mute-btn');
-    const volumeSlider = document.getElementById('volume-slider');
+    // Expose for debugging
+    window.screenManager = screenManager;
+    window.progressManager = progressManager;
 
-    muteBtn.addEventListener('click', () => {
-        const isMuted = game.audio.toggleMute();
-        muteBtn.textContent = isMuted ? '🔇' : '🔊';
-    });
+    // Create and register screens
 
-    volumeSlider.addEventListener('input', (e) => {
-        game.audio.setVolume(e.target.value / 100);
-    });
+    const lobbyScreen = new LobbyScreen(screenManager, progressManager);
+    const storyScreen = new StoryScreen(screenManager, progressManager);
+    const achievementScreen = new AchievementScreen(screenManager, progressManager);
+    const gameScreen = new GameScreen(screenManager, progressManager);
 
-    // Set initial mute button state
-    if (game.audio.isMuted) {
-        muteBtn.textContent = '🔇';
-    }
+
+    screenManager.registerScreen('lobby', lobbyScreen);
+    screenManager.registerScreen('story', storyScreen);
+    screenManager.registerScreen('achievement', achievementScreen);
+    screenManager.registerScreen('game', gameScreen);
+
+    // Start with title screen
+    screenManager.showScreen('lobby');
 });

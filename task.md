@@ -1,0 +1,24 @@
+# Task List
+
+- [x] Verify Achievement System
+    - [x] Check if achievements are unlocked correctly
+    - [x] Check if notifications are shown
+    - [x] Check if rewards are given
+- [x] Verify Story System
+    - [x] Check if stories are unlocked correctly
+    - [x] Check if story reader works
+- [x] Verify Achievement System
+    - [x] Check if achievements are unlocked correctly
+    - [x] Check if notifications are shown
+    - [x] Check if rewards are given
+- [x] Verify Story System
+    - [x] Check if stories are unlocked correctly
+    - [x] Check if story reader works
+- [x] Verify Game Logic
+    - [x] Check if game over works
+    - [x] Check if level clear works
+- [x] Verify Improvements
+    - [x] Check duplicate notifications fix
+    - [x] Check notification queue UI
+    - [x] Check wall drop gap fix
+    - [x] Check lobby button and confirmation
