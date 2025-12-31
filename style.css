@@ -1171,7 +1171,12 @@ button#result-button:hover {
     }
 
     #main-wrapper {
-        gap: 8px;
+        gap: 15px;
+        /* Increased gap */
+        justify-content: flex-start;
+        /* Start from top to avoid centering overlap */
+        padding-top: 50px;
+        /* Safe space for top bar */
     }
 
     #game-container {

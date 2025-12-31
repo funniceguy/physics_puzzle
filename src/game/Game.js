@@ -16,7 +16,7 @@ export class Game {
 
         // Disable effects on mobile for performance
         if (this.isMobileDevice) {
-            console.log('Mobile device detected - effects disabled for performance');
+            console.log('Mobile device detected - enabling optimized effects');
         }
 
         this.score = 0;
@@ -246,9 +246,7 @@ export class Game {
         this.currentCircle = null;
 
         // Only play sound on desktop
-        if (!this.isMobileDevice) {
-            this.audio.play('drop');
-        }
+        this.audio.play('drop');
 
         setTimeout(() => {
             // Only spawn if game is still active
@@ -296,11 +294,8 @@ export class Game {
 
             this.addScore(CIRCLES[bodyA.gameData.level].score * 2);
 
-            // Only show effects on desktop
-            if (!this.isMobileDevice) {
-                this.ui.spawnMergeEffect(midX, midY, CIRCLES[bodyA.gameData.level].score * 2);
-                this.audio.play('merge');
-            }
+            this.ui.spawnMergeEffect(midX, midY, CIRCLES[bodyA.gameData.level].score * 2);
+            this.audio.play('merge');
 
             this.applyExplosion(midX, midY, CIRCLES[bodyA.gameData.level].radius, false);
 
@@ -361,9 +356,7 @@ export class Game {
         }
 
         // Only play sound on desktop
-        if (!this.isMobileDevice) {
-            this.audio.play('score');
-        }
+        this.audio.play('score');
 
         const nextLevelThreshold = LEVEL_SCORE_THRESHOLDS[this.level];
         if (this.score >= nextLevelThreshold && !this.isMissionComplete) {
@@ -378,10 +371,8 @@ export class Game {
         const acquiredItem = this.rewardRandomItem();
 
         // Only show effects on desktop
-        if (!this.isMobileDevice) {
-            this.ui.spawnLevelCompleteEffect();
-            this.audio.play('levelComplete');
-        }
+        this.ui.spawnLevelCompleteEffect();
+        this.audio.play('levelComplete');
 
         this.ui.showMissionComplete(this.level, this.score, acquiredItem, () => {
             this.nextLevel();
