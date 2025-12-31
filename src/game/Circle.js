@@ -12,8 +12,8 @@ export class Circle {
             render: {
                 sprite: {
                     texture: circleData.img,
-                    xScale: (radius * 2) / 72, // Scale 72px image to diameter
-                    yScale: (radius * 2) / 72
+                    xScale: (radius * 2 * 1.08) / 72, // Scale to slightly larger than diameter to cover gaps
+                    yScale: (radius * 2 * 1.08) / 72
                 }
             },
             label: 'circle'

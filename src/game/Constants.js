@@ -17,7 +17,12 @@ export const CIRCLES = [
     { radius: 64, score: 1280, img: BASE_URL + '1f351.png' }, // 🍑 Peach (was 80)
     { radius: 76, score: 2560, img: BASE_URL + '1f34f.png' }, // 🍏 Green Apple (was 95)
     { radius: 88, score: 5120, img: BASE_URL + '1f34e.png' }, // 🍎 Red Apple (was 110)
-    { radius: 104, score: 10240, img: BASE_URL + '1f349.png' } // 🍉 Watermelon (was 130)
+    // Custom SVG for Round Watermelon (replacing 1f349.png slice)
+    {
+        radius: 104,
+        score: 10240,
+        img: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="72px" height="72px" viewBox="0 0 72 72"%3E%3Ccircle cx="36" cy="36" r="34" fill="%234CAF50" stroke="%231B5E20" stroke-width="1"/%3E%3Cpath d="M36 2 C 42 12 44 24 40 36 C 36 48 34 60 36 70 M 18 8 C 24 16 26 28 22 36 C 18 44 16 56 18 64 M 54 8 C 48 16 46 28 50 36 C 54 44 56 56 54 64" stroke="%231B5E20" stroke-width="4" fill="none" stroke-linecap="round"/%3E%3C/svg%3E'
+    } // 🍉 Watermelon (Round)
 ];
 
 export const PHYSICS = {
@@ -41,3 +46,17 @@ export const LEVEL_SCORE_THRESHOLDS = [
 ];
 
 export const DROP_COOLDOWN = 400; // Faster tempo (ms)
+export const NEXT_TURN_DELAY = 1000;
+
+export const SLOW_MOTION_EFFECT = {
+    SLOW_DOWN_DURATION: 800,
+    SLOW_MOTION_DURATION: 600,
+    SPEED_UP_DURATION: 400,
+    MIN_TIME_SCALE: 0.2
+};
+
+export const VIBRATION_CONFIG = {
+    DURATION: 3000,
+    RANGE: 250,
+    FORCE: 0.003
+};

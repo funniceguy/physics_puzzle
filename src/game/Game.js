@@ -1,6 +1,6 @@
 import { PhysicsWorld } from './PhysicsWorld.js';
 import { Circle } from './Circle.js';
-import { CIRCLES, GAME_WIDTH, GAME_HEIGHT, WALL_THICKNESS, MERGE_EXPLOSION_FORCE, PHYSICS, PHYSICS_SCALE, LEVEL_SCORE_THRESHOLDS, TOP_LINE_Y, DROP_COOLDOWN } from './Constants.js';
+import { CIRCLES, GAME_WIDTH, GAME_HEIGHT, WALL_THICKNESS, MERGE_EXPLOSION_FORCE, PHYSICS, PHYSICS_SCALE, LEVEL_SCORE_THRESHOLDS, TOP_LINE_Y, DROP_COOLDOWN, NEXT_TURN_DELAY, SLOW_MOTION_EFFECT, VIBRATION_CONFIG } from './Constants.js';
 import { UIManager } from '../ui/UIManager.js';
 import { AudioManager } from '../audio/AudioManager.js';
 import { isMobile } from '../utils/deviceDetection.js';
@@ -54,9 +54,15 @@ export class Game {
     setupUI() {
         this.ui.setupItemListeners((itemType) => {
             if (this.activeItem === itemType) {
+                // Toggle off current item
                 this.activeItem = null;
                 this.ui.toggleItemActive(itemType, false);
             } else {
+                // Switch to new item
+                if (this.activeItem) {
+                    // Visually toggle off previous item (though UIManager handles this via clear-all, explicit state clear is good)
+                    this.ui.toggleItemActive(this.activeItem, false);
+                }
                 this.activeItem = itemType;
                 this.ui.toggleItemActive(itemType, true);
             }
@@ -67,7 +73,7 @@ export class Game {
         const container = document.getElementById('game-container');
 
         container.addEventListener('mousemove', (e) => {
-            if (this.currentCircle && this.canDrop && !this.isGameOver && !this.isMissionComplete && !this.activeItem) {
+            if (this.currentCircle && this.canDrop && !this.isGameOver && !this.activeItem) {
                 this.updateCurrentCirclePosition(e.clientX);
             }
         });
@@ -83,7 +89,7 @@ export class Game {
                 this.audio.init();
             }
 
-            if (this.isGameOver || this.isMissionComplete) return;
+            if (this.isGameOver) return;
 
             if (this.activeItem) {
                 this.handleItemClick(e);
@@ -99,6 +105,34 @@ export class Game {
                 await this.audio.init();
             }
         }, { once: true });
+
+        // Handle focus loss/gain to prevent "stuck" states
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Determine pause behavior if needed
+                this.canDrop = true; // Ensure drop is enabled when returning
+            } else {
+                // Recover from potential "stuck" state where no fruit is spawning
+                // Wait a small delay to ensure physics engine wakes up
+                setTimeout(() => {
+                    if (!this.currentCircle && !this.isGameOver && !this.isMissionComplete) {
+                        console.log('Recovering from stuck state: Spawning next circle');
+                        this.canDrop = true;
+                        this.spawnNextCircle();
+                    }
+
+                    // recover audio context if needed
+                    if (this.audio && this.audio.context && this.audio.context.state === 'suspended') {
+                        this.audio.context.resume();
+                    }
+                }, 100);
+            }
+        });
+
+        // Fail-safe for mouseup outside window
+        window.addEventListener('mouseup', () => {
+            // Reset drag state if we implement drag in future, currently just ensuring nothing hangs
+        });
     }
 
     handleItemClick(e) {
@@ -155,7 +189,7 @@ export class Game {
         this.activeVibrations.push({
             body: centerBody,
             startTime: Date.now(),
-            duration: 3000
+            duration: VIBRATION_CONFIG.DURATION
         });
     }
 
@@ -177,7 +211,7 @@ export class Game {
     }
 
     spawnNextCircle() {
-        if (this.isGameOver || this.isMissionComplete) return;
+        if (this.isGameOver) return;
 
         // Safety check: don't spawn if there's already a current circle
         if (this.currentCircle) {
@@ -218,7 +252,7 @@ export class Game {
 
         setTimeout(() => {
             // Only spawn if game is still active
-            if (!this.isGameOver && !this.isMissionComplete) {
+            if (!this.isGameOver) {
                 this.spawnNextCircle();
             }
         }, DROP_COOLDOWN);
@@ -393,7 +427,7 @@ export class Game {
             if (!this.isGameOver && !this.isMissionComplete) {
                 this.canDrop = true;
             }
-        }, 1000);
+        }, NEXT_TURN_DELAY);
     }
 
     setupGameLoop() {
@@ -427,8 +461,8 @@ export class Game {
                     const dy = body.position.y - vib.body.position.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 250) {
-                        const forceMagnitude = 0.003 * body.mass;
+                    if (dist < VIBRATION_CONFIG.RANGE) {
+                        const forceMagnitude = VIBRATION_CONFIG.FORCE * body.mass;
                         Matter.Body.applyForce(body, body.position, {
                             x: (Math.random() - 0.5) * forceMagnitude,
                             y: (Math.random() - 0.5) * forceMagnitude
@@ -443,8 +477,8 @@ export class Game {
             for (const body of bodies) {
                 if (body.isStatic || body.isSensor) continue;
 
-                // Game over if fruit is above the line
-                if (body.position.y < TOP_LINE_Y) {
+                // Game over if fruit is above the line (check top edge of bounding box)
+                if (body.bounds.min.y < TOP_LINE_Y) {
                     // Give a small grace period for bouncing (500ms)
                     if (!body.gameData.deadlineWarningTime) {
                         body.gameData.deadlineWarningTime = Date.now();
@@ -468,10 +502,10 @@ export class Game {
         // Slow down physics engine
         const originalTimeScale = this.physics.engine.timing.timeScale;
         let currentTimeScale = originalTimeScale;
-        const slowDownDuration = 800; // 0.8 seconds to slow down
-        const slowMotionDuration = 600; // 0.6 seconds at slow speed
-        const speedUpDuration = 400; // 0.4 seconds to speed back up
-        const minTimeScale = 0.2; // Slow to 20% speed
+        const slowDownDuration = SLOW_MOTION_EFFECT.SLOW_DOWN_DURATION;
+        const slowMotionDuration = SLOW_MOTION_EFFECT.SLOW_MOTION_DURATION;
+        const speedUpDuration = SLOW_MOTION_EFFECT.SPEED_UP_DURATION;
+        const minTimeScale = SLOW_MOTION_EFFECT.MIN_TIME_SCALE;
 
         const startTime = Date.now();
 
