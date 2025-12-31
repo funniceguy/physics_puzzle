@@ -80,7 +80,7 @@ export class UIManager {
         this.resultScore.textContent = `Final Score: ${score}`;
         this.resultTitle.style.color = isWin ? '#00FF00' : '#FF0000';
 
-        this.resultButton.textContent = 'Play Again';
+        this.resultButton.textContent = 'LOBBY';
         this.resultButton.onclick = (event) => {
             event.stopPropagation(); // Prevent click from bubbling to game container
             location.reload();

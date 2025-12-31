@@ -531,7 +531,7 @@ export class Game {
     }
 
     gameOver() {
-        if (this.isGameOver) return; // Prevent double trigger
+        // if (this.isGameOver) return; // Allow call from slow motion effect
         this.isMissionComplete = false;
 
         // Only play sound on desktop
