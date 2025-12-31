@@ -1,109 +1,114 @@
 # UI Design System
 
-## 1. Design Tokens (디자인 변수)
+This document serves as the **Single Source of Truth** for all UI development in the "Life Pieces" project. It is reverse-engineered from the current implementation to ensure consistency.
 
-### 1.1 Colors (색상)
-프로젝트 전반에 사용되는 핵심 색상 팔레트입니다.
+## 1. Design Tokens
 
-| Category | Token Name | Value (Hex/Gradient) | Semantic Usage |
-|:---:|:---|:---|:---|
-| **Primary** | `Color/Cyan` | `#4CC9F0` | 주요 텍스트 강조, 활성 아이콘 효과 |
-| **Secondary** | `Color/Purple` | `#7209B7` | 로비 타이틀 그라데이션 (Start) |
-| **Background** | `Bg/DeepBlue` | `linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)` | 앱 전체 배경 |
-| **Surface** | `Surface/Glass` | `rgba(255, 255, 255, 0.05)` + `blur(10px)` | 상단 바, 아이템 바, 패널 배경 |
-| **Success** | `Color/Green` | `linear-gradient(135deg, #4CAF50, #45A049)` | 확인 버튼, Primary 액션 |
-| **Danger** | `Color/Red` | `linear-gradient(135deg, #FF6B6B, #EE5A6F)` | 알림 뱃지, 부정적 상태 |
-| **Warning** | `Color/Orange` | `linear-gradient(45deg, #FF0055, #FF5500)` | 결과 화면 타이틀, 강조 |
+### Colors
+| Token Name | Value | Description |
+| :--- | :--- | :--- |
+| `Primary` | `#4CC9F0` | Main brand color (Cyan/Blue) |
+| `Secondary` | `#7209B7` | Secondary brand color (Purple) |
+| `Background` | `linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)` | Deep blue gradient for main background |
+| `Surface Glass` | `rgba(255, 255, 255, 0.05)` | Glassmorphism base layer |
+| `Game Container` | `rgba(30, 30, 40, 0.6)` | Physics area background |
+| `Success` | `linear-gradient(135deg, #4CAF50, #45A049)` | Success actions, Play button, Claim button |
+| `Danger` | `linear-gradient(135deg, #FF6B6B, #EE5A6F)` | Critical info, warnings |
+| `Warning` | `linear-gradient(45deg, #FF0055, #FF5500)` | Highlights, Special text |
+| `Text White` | `#ffffff` | Primary text color |
+| `Text Dim` | `rgba(255, 255, 255, 0.7)` | Secondary text color |
 
-### 1.2 Typography (타이포그래피)
-기본 폰트: `'Outfit', 'Segoe UI', sans-serif`
+### Typography
+*   **Font Family**: `'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`
+*   **Scale**:
+    *   **H1 (Lobby Title)**: `48px` (Mobile: `32px`) | Bold
+    *   **H2 (Result Title)**: `36px` (Mobile: `28px`) | Uppercase | Letter-spacing `4px`
+    *   **H3 (Section Title)**: `24px` | Bold
+    *   **Body**: `16px` (Mobile: `14px`)
+    *   **Button Text**: `28px` (Play) / `18px` (Standard)
 
-| Token Name | Size | Weight | Line Height | Usage |
-|:---|:---|:---|:---|:---|
-| **Heading 1** | 48px | Bold (700) | 1.2 | 로비 타이틀 |
-| **Heading 2** | 36px | Bold (700) | 1.2 | 결과 화면 타이틀 |
-| **Heading 3** | 24px | Bold (700) | 1.4 | 스탯 값, 섹션 헤더 |
-| **Body Large** | 18px | Regular (400) / Bold (600) | 1.5 | 버튼 텍스트, 설명문 |
-| **Body Medium** | 16px | Regular (400) | 1.5 | 일반 본문, 다이얼로그 내용 |
-| **Body Small** | 14px | Regular (400) | 1.4 | 점수 정보, 보조 텍스트 |
-
-### 1.3 Spacing & Sizing (간격 및 크기)
-
-#### Border Radius (표준화 제안)
-*   `Radius/Small`: **8px** (캔버스, 작은 컨테이너)
-*   `Radius/Medium`: **16px** (일반 버튼, 게임 컨테이너, 패널)
-*   `Radius/Large`: **24px** (아이템 바, 대형 패널)
-*   `Radius/Pill`: **50% (Circle)** 또는 **30px+** (라운드 버튼)
-
-#### Interface Layout
-*   **App Max Width**: 1080px (Main Wrapper)
-*   **Game Max Width**: 400px (Mobile Optimized Ratio 2:3)
-*   **Item Button Size**: 55px (Desktop) / 50px (Mobile)
+### Spacing & Sizing
+| Token Name | Value | Description |
+| :--- | :--- | :--- |
+| `Radius Small` | `8px` | Small elements (canvas, inner containers) |
+| `Radius Medium` | `16px` | Buttons, Cards, Game Container |
+| `Radius Large` | `24px` | Large containers, Item bar |
+| `Game Width` | `400px` | Max width of the physics container |
+| `Max App Width` | `1080px` | Max width of the entire layout |
 
 ---
 
-## 2. Component Library (컴포넌트 명세)
+## 2. Component Library
 
-### 2.1 Buttons (버튼)
+### Buttons
 
-#### Primary Button (`.btn-primary`, `#result-button`)
-*   **Appearance**: Success Green Gradient, Shadow, Rounded Pills.
+#### Play Button (Lobby)
+*   **Style**: Capsule shape (`40px` radius), Success Gradient (`--color-success`).
+*   **Shadow**: `0 10px 25px rgba(76, 175, 80, 0.4)`.
 *   **Interaction**:
-    *   Hover: `transform:  translateY(-2px)`, Shadow 확산.
-    *   Click: `transform: scale(0.95)` (제안).
+    *   **Hover**: Scale `1.05`, Shadow expands to `0 15px 35px`.
 
-#### Secondary/Glass Button (`.btn-secondary`, `.item-btn`)
-*   **Appearance**: Glassmorphism (White 10% Opacity), 1px White Border (20% Opacity).
+#### Standard Button (Confirm / Result)
+*   **Style**: Pill shape (`30px` radius), Solid background (Success/Transparent).
+*   **Padding**: `12px 35px`.
 *   **Interaction**:
-    *   Hover: Opacity 증가, `transform: translateY(-2px)`.
-    *   Active State (`.active`): Cyan Background Tint + Glow Effect.
+    *   **Hover**: detailed transform `translateY(-2px)`.
 
-### 2.2 Panels & Containers (패널)
+#### Item Button (In-Game)
+*   **Size**: `55x55px` (Mobile: `50px`).
+*   **Style**: Glassmorphism (`rgba(255, 255, 255, 0.1)`), Square with `radius-medium`.
+*   **State - Active**: Cyan Tint (`rgba(76, 201, 240, 0.3)`), Glow (`box-shadow`).
+*   **State - Disabled**: Opacity `0.4`, `cursor: not-allowed`.
 
-#### Glass Panel
-*   **Class**: `#game-container`, `#item-bar`, `.confirm-box`
-*   **Style**:
-    *   Background: `rgba(255, 255, 255, 0.05)` ~ `rgba(30, 30, 40, 0.6)`
-    *   Backdrop Filter: `blur(10px)`
-    *   Border: `1px solid rgba(255, 255, 255, 0.1)`
-    *   Shadow: `0 8px 32px rgba(0, 0, 0, 0.37)`
+#### Nav Button (Bottom Bar)
+*   **Style**: Icon + Label, Color `rgba(255,255,255,0.4)`.
+*   **Active**: Color `Primary (#4CC9F0)`, Icon `translateY(-5px)`.
 
-### 2.3 Indicators (인디케이터)
+### Panels
 
-#### Badge (`.item-count`)
-*   **Position**: 부모 요소 우상단 (-8px).
-*   **Style**: Red Gradient, White Text, 11px Font Size, Box Shadow.
+#### Game Container
+*   **Border**: `1px solid rgba(255, 255, 255, 0.1)`.
+*   **Background**: `rgba(30,30,40, 0.6)` + `backdrop-filter: blur(10px)`.
+*   **Shadow**: `0 8px 32px 0 rgba(0, 0, 0, 0.37)`.
 
----
+#### Cards (Story/Character)
+*   **Style**: Row layout, Glass background (`rgba(255,255,255, 0.05)`).
+*   **Hover**: Slide right (`translateX(5px)`), Background lighten.
 
-## 3. Layout & Structure (레이아웃 및 구조)
-
-### 3.1 Anchor Strategy (반응형 전략)
-*   **Desktop**:
-    *   `#main-wrapper`: 화면 중앙 정렬 (`justify-content: center`).
-    *   `#game-container`: 고정 비율(2:3), 최대 높이 `calc(100vh - 150px)`.
-*   **Mobile (< 480px)**:
-    *   Padding 축소 (20px -> 5px).
-    *   Button Size 축소 (55px -> 50px).
-    *   Font Size 축소 (약 80-90% 수준).
-
-### 3.2 Layer Order (Z-Index Hierarchy)
-일관된 렌더링 순서를 보장하기 위한 계층 구조입니다.
-
-| Layer Name | Z-Index | Elements |
-|:---|:---|:---|
-| **Background** | 0 | Canvas (Matter.js World) |
-| **Game UI** | 5 | Top Line (데드라인) |
-| **HUD** | 10 | Score UI, Top Bar |
-| **Effects** | 15 | 파티클, 이펙트 레이어 |
-| **Overlays** | 20 | Result Screen, Pause Screen |
-| **Popups** | 10000 | Confirm Dialog, Alerts |
-| **System** | 99999 | Debug Overlay, System Cursor |
+### Inputs & Sliders
+*   **Volume Slider**:
+    *   **Track**: `height: 4px`, `bg: rgba(255,255,255, 0.2)`.
+    *   **Thumb**: `14px` Circle, `bg: Primary`.
 
 ---
 
-## 4. Standardization Recommendations (표준화 제안사항)
+## 3. Layout & Structure
 
-1.  **Border Radius 통일**: 현재 코드에 혼재된 `20px`, `24px`, `30px` 등을 위에서 정의한 `Small/Medium/Large` 스케일로 통일할 것을 권장합니다.
-2.  **Color Variables**: `style.css` 상단 `:root`에 위에서 정의한 색상들을 CSS 변수(`--color-primary`, `--bg-glass` 등)로 선언하여 재사용성을 높여야 합니다.
-3.  **Animations**: `fadeIn`, `slideUp` 등 산재된 키프레임 애니메이션을 유틸리티 클래스로 분리하여 관리할 것을 제안합니다.
+### Anchor Strategy
+The application uses a **Center-Anchored Flexible Layout**.
+*   **Vertical**: `height: 100vh` (with `-webkit-fill-available` fallback). Content acts as a column centered via flexbox.
+*   **Horizontal**:
+    *   `#main-wrapper` is centered with `max-width: 1080px`.
+    *   `#game-container` is strictly sized `max-width: 400px` but responsive (`width: 100%`).
+*   **Aspect Ratio**: Game container enforces `aspect-ratio: 2 / 3` ensuring consistent physics simulation coordinates regardless of screen.
+
+### Layer Order (Z-Index)
+| Z-Index | Layer | Elements |
+| :--- | :--- | :--- |
+| `0` | Background | App Background |
+| `5` | Game UI | Game Container, Canvas |
+| `10` | HUD | Top Bar, Item Bar |
+| `15` | Effects | Global Particles (Confetti) |
+| `20` | Overlays | Result Screen, Story/Achievement Screens |
+| `2000` | Notifications | Achievement Popups |
+| `10000` | Popups | Confirmation Dialogs |
+
+---
+
+## 4. Standardized Values & Suggestions
+> [!NOTE]
+> During reverse engineering, the following standards were applied to unify identified inconsistencies.
+
+1.  **Button Gradients**: Adopted the css variable `--color-success` (`linear-gradient(135deg, #4CAF50, #45A049)`) as the single source for all positive actions (Play, Claim, Result confirm), replacing occasional hardcoded `rgb` values.
+2.  **Glassmorphism**: Standardized sidebar/panel backgrounds to use `var(--bg-surface-glass)` instead of varying `rgba` opacity values (0.05 vs 0.1).
+3.  **Border Radius**: Enforce `8px`, `16px`, `24px` scale (`--radius-small/medium/large`) to avoid arbitrary values like `20px` or `30px` unless specific to rounded-capsule buttons.
