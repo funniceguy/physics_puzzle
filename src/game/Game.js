@@ -535,9 +535,7 @@ export class Game {
         this.isMissionComplete = false;
 
         // Only play sound on desktop
-        if (!this.isMobileDevice) {
-            this.audio.play('gameOver');
-        }
+        this.audio.play('gameOver');
 
         // Record progress
         if (this.progressManager) {
