@@ -1,27 +1,24 @@
-# Task List & Roadmap
+# Project Roadmap & Risks (Roadmap)
 
-## 1. 현재 상태 분석 (Status Analysis)
-- **진행률**: 약 80% (핵심 루프 구현 완료, 메타 시스템 기본 구현 완료)
-- **안정성**: 기본 플레이 가능. 모바일 디바이스 대응 코드가 포함되어 있으나 테스트 필요.
-- **확장성**: `StoryData`, `AchievementData`가 분리되어 있어 데이터 확장은 용이함.
+이 문서는 단순 작업 목록을 넘어, 프로젝트의 장기적인 방향성과 기술적 난제, 주의사항을 기록합니다.
 
-## 2. 해결해야 할 과제 (Immediate Tasks)
+## 🚧 Technical Debt & Risks (기술적 부채 및 위험)
+- [ ] **Physics Determinism**: Matter.js는 부동소수점 연산으로 인해 브라우저/기기마다 미세하게 다른 물리 결과를 낼 수 있음. (경쟁 요소 도입 시 주의)
+- [ ] **Garbage Collection**: 파티클이나 DOM 요소를 자주 생성/삭제하는 현재 방식은 모바일에서 GC Pausing을 유발할 수 있음. -> Object Pooling 고려 필요.
+- [ ] **Canvas Resolution**: 고해상도(Retina) 디스플레이에서 캔버스가 흐릿하게 보일 수 있음. `devicePixelRatio` 대응 필요.
 
-### 2.1 버그 수정 및 최적화
-- [ ] **모바일 오디오 이슈**: 모바일에서 오디오 컨텍스트 초기화 로직 확인 및 `isMobile` 체크 로직 보완.
-- [ ] **성능 최적화**: Matter.js 렌더러는 디버그용에 가까우므로, Canvas API를 직접 사용하여 렌더링 파이프라인 최적화 고려.
-- [ ] **상수 관리**: `Constants.js`에 매직 넘버들이 일부 남아있을 수 있음. 전수 조사하여 상수화.
+## 🔭 Future Roadmap (로드맵)
+### Phase 7: Advanced Rendering
+- **Pixi.js Migration**: 현재 Matter.Render(Debug용)와 DOM Overlay 방식을 WebGL 기반의 Pixi.js로 통합하여 퍼포먼스와 시각적 퀄리티 대폭 향상. (Shader Effect 등)
 
-### 2.2 기능 개선 (Feature Improvements)
-- [ ] **저장 데이터 마이그레이션**: 데이터 구조 변경 시 기존 세이브 호환성 처리 로직 추가 필요.
-- [ ] **튜토리얼**: 첫 진입 유저를 위한 간단한 가이드 오버레이 추가.
-- [ ] **설정 메뉴**: 사운드 ON/OFF, 진동 ON/OFF 등 옵션 메뉴 구현.
+### Phase 8: Social & Competitive
+- **Web Socket**: 실시간 1:1 대전 모드. (상대의 합체 충격이 나에게 넘어오는 등 뿌요뿌요 방식)
+- **Leaderboard**: Backendless(Firebase) 또는 Custom Server를 통한 글로벌 랭킹.
 
-### 2.3 시각적 개선 (Visual Polish)
-- [ ] **배경 연출**: 정적인 배경 대신 레벨 진행에 따라 변화하거나 파티클이 떠다니는 동적 배경 적용.
-- [ ] **UI 애니메이션**: 팝업 등장/퇴장 시 부드러운 트랜지션 효과 강화.
+### Phase 9: Content Expansion
+- **Themes**: 계절별(크리스마스, 할로윈) 과일 스킨 및 배경.
+- **New Modes**: 타임 어택, 제한된 횟수 내 최고 점수 내기 등.
 
-## 3. 장기 로드맵 (Roadmap)
-- **Phase 1**: 문서화 및 코드 안정화 (현재 단계)
-- **Phase 2**: 모바일 UX 완벽 대응 및 앱 패키징 검토
-- **Phase 3**: 추가 컨텐츠 (챌린지 모드, 새로운 과일 테마 등) 개발/배포
+## ⚠️ Known Issues (알려진 문제)
+- 모바일 사파리(iOS)에서 오디오 컨텍스트가 탭 전환 시 중단되는 현상 (현재 `visibilitychange` 핸들러로 일부 대응).
+- 아이템 사용 순간 물리 연산이 튀는 현상 (Force application tuning 필요).
